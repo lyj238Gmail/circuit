@@ -72,33 +72,21 @@ let arr ls = Arr(ls)
 *)
 type exp =
   | Const of const
-  | Var of var
-  | Param of paramref
-  | Ite of formula * exp * exp
-  | UIF of string * exp list
-(** Boolean expressions, including
-    + Boolean constants, Chaos as True, Miracle as false
-    + Equation expression
-    + Other basic logical operations, including negation,
-      conjuction, disjuction, and implication
-*)
-and formula =
+  | Var of var 
+  | Neg of exp
+
+  | Eqn of exp * exp
+  | Ite of exp * exp * exp
+  | AndList of exp list
+  | OrList of exp list
+  | Imply of exp * exp
   | Chaos
   | Miracle
-  | UIP of string * exp list
-  | Eqn of exp * exp
-  | Neg of formula
-  | AndList of formula list
-  | OrList of formula list
-  | Imply of formula * formula
 with sexp
 
 let const c = Const c
-let var v = Var v
-let param paramref = Param(paramref)
+let var v = Var v 
 let ite f e1 e2 = Ite(f, e1, e2)
-let uif  n el = UIF(n, el)
-
 let chaos = Chaos
 let miracle = Miracle
 let uip n el = UIP(n, el)
@@ -124,10 +112,10 @@ let parallel statements = Parallel statements
     + Rule: name, parameters, guard, assignments
 *)
 type rule = 
-  | Rule of string * paramdef list * formula * statement
+  | Rule of string * paramdef list   * statement
 with sexp
 
-let rule name paramdef f s = Rule(name, paramdef, f, s)
+let rule name paramdef   s = Rule(name, paramdef, , s)
 
 (** Represents properties
     + Prop: name, parameters, formula
